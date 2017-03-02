@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="synyisikaifd"
+  id="myeclipse.1477293852873"
+  context-root="/synyisikaifd"
+  j2ee-spec="1.7"
+  archive="synyisikaifd.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--定时执行配置 -->
+    <bean id="quartzController" class="com.shenzhenair.controller.QuartzController"/> 
+
+    <!-- bean触发方法配置 -->
+    <bean name="loaderQuartzBean" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- bean名字 -->
+        <property name="targetObject" ref="quartzController"/><!--目标对象-->
+        <!-- bean方法 -->
+        <property name="targetMethod" value="run"/>
+        <!--配置为false不允许任务并发执行-->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!-- bean触发时间配置,指定具体的时间执行 -->
+    <bean id="loaderQuartzTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <!-- 触发bean配置 -->
+        <property name="jobDetail" ref="loaderQuartzBean"/>
+        <property name="startDelay" value="10000"/>
+        <!-- 触发时间配置 -->
+        <!-- <property name="cronExpression" value="0 0 2 * * ?"/>  -->   
+         <property name="cronExpression" value="0 40-50/5 12 * * ?"/> 
+        
+    </bean>
+    
+    
+    
+    
+    
+      <!-- bean触发方法配置 -->
+    <bean name="loaderQuartzBean1" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- bean名字 -->
+        <property name="targetObject" ref="quartzController"/><!--目标对象-->
+        <!-- bean方法 -->
+        <property name="targetMethod" value="run"/>
+        <!--配置为false不允许任务并发执行-->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!-- bean触发时间配置,指定具体的时间执行 -->
+    <bean id="loaderQuartzTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <!-- 触发bean配置 -->
+        <property name="jobDetail" ref="loaderQuartzBean1"/>
+        <property name="startDelay" value="10000"/>
+        <!-- 触发时间配置 -->
+        <!-- <property name="cronExpression" value="0 0 2 * * ?"/>  -->   
+         <property name="cronExpression" value="0 10-20/5 05 * * ?"/>    
+       
+    </bean>
+
+
+    <!-- 调度工厂 -->
+    <bean id="springJobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="loaderQuartzTrigger"/>
+                <ref bean="loaderQuartzTrigger1"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace可以随意命名，一般约定写相应类的全路径 -->
+<mapper namespace="com.shenzhenair.mapper.FdMapper">
+    <!--  <resultMap id="oneEntity" type="com.shenzhenair.bean.Fd">
+        <id column="id" property="id"/> 
+        <result column="depart" property="depart"/>
+        <result column="arrive" property="arrive"/>
+        <result column="flightdate" property="flightdate"/>
+        <result column="tpm" property="tpm"/>
+        <result column="classyprice" property="classyprice"/>
+        <result column="waytype" property="waytype"/>
+        <result column="afueltax" property="afueltax"/>
+        <result column="airporttax" property="airporttax"/>
+        <result column="carrier" property="carrier"/>
+        <result column="farebase" property="farebase"/>
+        <result column="code" property="code"/>
+        <result column="discount" property="discount"/>
+        <result column="notvalidafter" property="notvalidafter"/>
+        <result column="notvalidbefore" property="notvalidbefore"/>
+        <result column="price" property="price"/>
+        <result column="ratestype" property="ratestype"/>
+        <result column="returnclass" property="returnclass"/>
+        <result column="totle" property="totle"/>
+         <result column="inserttime" property="inserttime"/>
+    </resultMap>  -->
+    
+    
+    <resultMap type="com.shenzhenair.bean.FdSyn" id="FdSynResultMap">
+        <id column="id" property="id"/> 
+		<result property="airLine" column="airline"/>
+		<result property="dePart" column="depart"/>
+		<result property="arRive" column="arrive"/>
+		<result property="classCode" column="classcode"/>
+		<result property="startDate" column="startdate"/>
+		<result property="endDate" column="enddate"/>
+		<result property="priceOw" column="priceow"/>
+		<result property="priceRt" column="pricert"/>
+		<result property="tpm" column="tpm"/>
+		<result property="cabin" column="cabin"/>
+		<result property="service" column="service"/>
+		<result property="fareBasis" column="farebasis"/>
+		<result property="updateTime" column="updatetime"/>
+		<result property="status" column="status"/>
+		<result property="updateBy" column="updateby"/>
+		<result property="preDays" column="predays"/>
+		<result property="endDays" column="enddays"/>
+		<result property="fareRule" column="farerule"/>
+		<result property="flag" column="flag"/>
+		<result property="fareStarteDay" column="farestarteday"/>
+		<result property="fareeEndDay" column="fareeendday"/>
+   </resultMap>
+    
+    
+	
+	<insert id="insert" parameterType="com.shenzhenair.bean.Fd">
+		INSERT INTO T_CLASSAGIO_FD
+		(ID,DEPART,ARRIVE,FLIGHTDATE,TPM,CLASSYPRICE,WAYTYPE,AFUELTAX,AIRPORTTAX,CARRIER,FAREBASE,CODE,DISCOUNT,NOTVALIDAFTER,NOTVALIDBEFORE,PRICE,RATESTYPE,RETURNCLASS,TOTLE,INSERTTIME)
+		values
+		(#{id},#{depart},#{arrive},to_date(#{flightdate},'yyyy-mm-dd'),#{tpm},#{classyprice},#{waytype},#{afueltax},#{airporttax},#{carrier},#{farebase},#{code},#{discount},to_date(#{notvalidafter},'yyyy-mm-dd'),to_date(#{notvalidbefore},'yyyy-mm-dd'),#{price},#{ratestype},#{returnclass},#{totle},sysdate)
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">
+			select classagio_fd_seq.nextval from dual
+		</selectKey>
+	</insert> 
+	
+	<update id="update" parameterType="com.shenzhenair.bean.Fd">
+		UPDATE T_CLASSAGIO_FD SET 
+		ISUSE=0 where 1=1 and
+		flightdate != to_date(#{flightdate},'yyyy-mm-dd')
+		and depart=#{depart}
+		and arrive=#{arrive}
+	</update>
+	
+	<select id="queryByCondition" parameterType="com.shenzhenair.bean.Fd" resultType="com.shenzhenair.bean.Fd">
+		select * from T_CLASSAGIO_FD where
+		depart=#{depart} and 
+		arrive=#{arrive} and
+		waytype=#{waytype} and
+		farebase=#{farebase} and
+		code=#{code} and
+		price != #{price} and
+		isuse=1
+	</select>
+	
+	<select id="queryAirline" resultType="com.shenzhenair.bean.Fd">
+		select distinct depart,arrive from T_CLASSAGIO t
+	</select>
+	
+	
+<select id="addDataBatch"  parameterType="java.util.HashMap" > 
+      
+    insert into 
+        T_DEMO(
+       
+         ID,
+        AIRLINE,
+                 DEPART,
+                 ARRIVE,
+                 CLASSCODE,
+                 STARTDATE,
+                 ENDDATE,
+                 PRICEOW,
+                 PRICERT,
+                 TPM,
+                 CABIN,
+                 SERVICE,
+                 FAREBASIS,
+                 UPDATETIME,
+                 STATUS,
+                 UPDATEBY,
+                 PREDAYS,
+                 ENDDAYS,
+                 FARERULE,
+                 REMARK,
+                 note
+                 )
+            select CLASSAGIO_FD_SEQ.NEXTVAL,A.* from (
+       <foreach collection="list" item="item" index="index" separator="union all" > 
+          
+       (select
+          #{item.airLine,jdbcType=VARCHAR},
+          #{item.dePart,jdbcType=VARCHAR},
+          #{item.arRive,jdbcType=VARCHAR},
+          #{item.classCode,jdbcType=VARCHAR},
+          #{item.startDate,jdbcType=VARCHAR},
+          #{item.endDate,jdbcType=VARCHAR},
+          #{item.priceOw,jdbcType=VARCHAR},
+          #{item.priceRt,jdbcType=VARCHAR},
+          #{item.tpm,jdbcType=VARCHAR},
+          #{item.cabin,jdbcType=VARCHAR},
+          #{item.service,jdbcType=VARCHAR},
+          #{item.fareBasis,jdbcType=VARCHAR},
+          #{item.updateTime,jdbcType=VARCHAR},
+          #{item.status,jdbcType=VARCHAR},
+          #{item.updateBy,jdbcType=VARCHAR},
+          #{item.preDays,jdbcType=VARCHAR},
+          #{item.endDays,jdbcType=VARCHAR},
+          #{item.farerule,jdbcType=VARCHAR},
+          #{item.remark,jdbcType=VARCHAR},
+          #{item.note,jdbcType=VARCHAR}
+          from dual)
+         </foreach> 
+     ) A
+    </select>
+	<!-- <select id="batchinsert" parameterType="java.util.List">
+		insert into T_Productamount(
+			mountId,productId,content,contentCode,amountPrice,chiAmprice)
+		select T_PRODUCTAMOUNT_SEQ.NEXTVAL,A.* from (
+		<foreach collection="list" item="item" index="index"  separator="UNION ALL" > 
+         	(select #{item.productId,jdbcType=INTEGER},#{item.content,jdbcType=VARCHAR},
+			#{item.contentCode,jdbcType=INTEGER},#{item.amountPrice,jdbcType=VARCHAR},#{item.chiAmprice,jdbcType=VARCHAR} from dual)
+        </foreach>) A
+	</select> -->
+	
+	
+	<select id="getseq" resultType="Integer">
+	   select classagio_fd_seq.nextval from dual 
+	</select>
+	 <delete id="delete" parameterType="com.shenzhenair.bean.FdSyn">
+	   delete T_BASEPRICE t where t.airline=#{airLine} and t.depart=#{dePart} and t.arrive=#{arRive} and t.classcode=#{classCode}
+         and t.cabin=#{cabin} and t.service=#{service} and flag='1'
+	</delete>
+	<select id="queryFlag" resultMap="FdSynResultMap" >
+	   select * from T_BASEPRICE where flag='1'
+	</select>
+	
+	<select id="queryFlagForUpdate" resultMap="FdSynResultMap" parameterType="com.shenzhenair.bean.FdSyn">
+	   select * from T_BASEPRICE t where t.airline=#{airLine} and t.depart=#{dePart} and t.arrive=#{arRive} and t.classcode=#{classCode}
+         and t.cabin=#{cabin} and t.service=#{service}
+	</select> 
+	
+	<delete id="deleteAll">
+	   delete T_BASEPRICE where flag='0'
+	</delete>
+	
+	
+</mapper>

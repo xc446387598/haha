@@ -1,0 +1,12 @@
+<Request>
+	<NeedCheckPrice>false</NeedCheckPrice>
+	<OfficeNo>SZH320</OfficeNo>
+	<Command>PAT:A#CUUTQ25</Command>
+	<Parm>
+		<Pnr></Pnr>
+		<SmallPnr>HVBMEK</SmallPnr>
+		<Tax>50</Tax>
+		<Price>YUUTQ25</Price>
+		<Dep>SZX</Dep>
+	</Parm>
+</Request>
